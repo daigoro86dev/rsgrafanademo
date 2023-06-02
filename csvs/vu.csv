@@ -1,0 +1,2 @@
+restart_on_fail,restart_times,test_run_time,user_wait_time
+true,5,30,300
