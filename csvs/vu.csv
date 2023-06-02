@@ -1,2 +1,2 @@
-restart_on_fail,restart_times,test_run_time,user_wait_time
-true,5,30,300
+restart_times,user_wait_time
+5,3000
