@@ -147,9 +147,9 @@
             <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}csvs/disk_series.csv</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
             <boolProp name="quotedData">false</boolProp>
-            <boolProp name="recycle">false</boolProp>
+            <boolProp name="recycle">true</boolProp>
             <stringProp name="shareMode">shareMode.all</stringProp>
-            <boolProp name="stopThread">true</boolProp>
+            <boolProp name="stopThread">false</boolProp>
             <stringProp name="variableNames">nodes</stringProp>
           </CSVDataSet>
           <hashTree/>
@@ -494,1017 +494,28 @@
               <stringProp name="shareMode">shareMode.all</stringProp>
             </CSVDataSet>
             <hashTree/>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Series If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
+            <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Time Loop Controller" enabled="true">
+              <boolProp name="LoopController.continue_forever">true</boolProp>
+              <stringProp name="LoopController.loops">${__groovy(import org.apache.jmeter.services.FileServer; new File(&quot;${PATH_GROOVY_WITH_SEPARATOR}&quot; + &quot;csvs/time_values.csv&quot;).readLines().size())}</stringProp>
+            </LoopController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="match[]" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">match[]</stringProp>
-                    </elementProp>
-                    <elementProp name="start" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">start</stringProp>
-                    </elementProp>
-                    <elementProp name="end" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">end</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
-                <stringProp name="HTTPSampler.method">POST</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                  <collectionProp name="HeaderManager.headers">
-                    <elementProp name="accept" elementType="Header">
-                      <stringProp name="Header.name">accept</stringProp>
-                      <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-encoding" elementType="Header">
-                      <stringProp name="Header.name">accept-encoding</stringProp>
-                      <stringProp name="Header.value">gzip, deflate, br</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-language" elementType="Header">
-                      <stringProp name="Header.name">accept-language</stringProp>
-                      <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
-                    </elementProp>
-                    <elementProp name="content-length" elementType="Header">
-                      <stringProp name="Header.name">content-length</stringProp>
-                      <stringProp name="Header.value">100</stringProp>
-                    </elementProp>
-                    <elementProp name="content-type" elementType="Header">
-                      <stringProp name="Header.name">content-type</stringProp>
-                      <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                    </elementProp>
-                    <elementProp name="origin&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">origin</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}</stringProp>
-                    </elementProp>
-                    <elementProp name="referer&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">referer</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </HeaderManager>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">1 0 -1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Serie Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
-              <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                    <collectionProp name="Arguments.arguments">
-                      <elementProp name="match[]" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">match[]</stringProp>
-                      </elementProp>
-                      <elementProp name="start" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PAST_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">start</stringProp>
-                      </elementProp>
-                      <elementProp name="end" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">end</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                  <stringProp name="HTTPSampler.port"></stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
-                  <stringProp name="HTTPSampler.method">POST</stringProp>
-                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                </HTTPSamplerProxy>
-                <hashTree>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                  </ConstantTimer>
-                  <hashTree/>
-                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                    <collectionProp name="HeaderManager.headers">
-                      <elementProp name="accept" elementType="Header">
-                        <stringProp name="Header.name">accept</stringProp>
-                        <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                      </elementProp>
-                      <elementProp name="accept-encoding" elementType="Header">
-                        <stringProp name="Header.name">accept-encoding</stringProp>
-                        <stringProp name="Header.value">gzip, deflate, br</stringProp>
-                      </elementProp>
-                      <elementProp name="accept-language" elementType="Header">
-                        <stringProp name="Header.name">accept-language</stringProp>
-                        <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
-                      </elementProp>
-                      <elementProp name="content-length" elementType="Header">
-                        <stringProp name="Header.name">content-length</stringProp>
-                        <stringProp name="Header.value">100</stringProp>
-                      </elementProp>
-                      <elementProp name="content-type" elementType="Header">
-                        <stringProp name="Header.name">content-type</stringProp>
-                        <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                      </elementProp>
-                      <elementProp name="origin&#x9;https" elementType="Header">
-                        <stringProp name="Header.name">origin</stringProp>
-                        <stringProp name="Header.value">https://${BASE_URL}</stringProp>
-                      </elementProp>
-                      <elementProp name="referer&#x9;https" elementType="Header">
-                        <stringProp name="Header.name">referer</stringProp>
-                        <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </HeaderManager>
-                  <hashTree/>
-                  <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">1 0 -1h</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="script"></stringProp>
-                  </JSR223PreProcessor>
-                  <hashTree/>
-                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                    <stringProp name="parameters"></stringProp>
-                    <stringProp name="script"></stringProp>
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                  </JSR223PostProcessor>
-                  <hashTree/>
-                </hashTree>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Annotations If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Annotations Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
-              <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                    <collectionProp name="Arguments.arguments">
-                      <elementProp name="from" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">from</stringProp>
-                      </elementProp>
-                      <elementProp name="to" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">to</stringProp>
-                      </elementProp>
-                      <elementProp name="limit" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">100</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">limit</stringProp>
-                      </elementProp>
-                      <elementProp name="matchAny" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">false</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">matchAny</stringProp>
-                      </elementProp>
-                      <elementProp name="dashboardUID" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">dashboardUID</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                  <stringProp name="HTTPSampler.port"></stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                  <stringProp name="HTTPSampler.method">GET</stringProp>
-                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                </HTTPSamplerProxy>
-                <hashTree>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                  </ConstantTimer>
-                  <hashTree/>
-                  <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">1 0 -1h</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="script"></stringProp>
-                  </JSR223PreProcessor>
-                  <hashTree/>
-                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                    <stringProp name="parameters"></stringProp>
-                    <stringProp name="script"></stringProp>
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                  </JSR223PostProcessor>
-                  <hashTree/>
-                </hashTree>
-              </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="from" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">from</stringProp>
-                    </elementProp>
-                    <elementProp name="to" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">to</stringProp>
-                    </elementProp>
-                    <elementProp name="limit" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">100</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">limit</stringProp>
-                    </elementProp>
-                    <elementProp name="matchAny" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">false</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">matchAny</stringProp>
-                    </elementProp>
-                    <elementProp name="dashboardUID" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">dashboardUID</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                <stringProp name="HTTPSampler.method">GET</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">1 0 -1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Series If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Serie Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
-              <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                    <collectionProp name="Arguments.arguments">
-                      <elementProp name="match[]" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">match[]</stringProp>
-                      </elementProp>
-                      <elementProp name="start" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PAST_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">start</stringProp>
-                      </elementProp>
-                      <elementProp name="end" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">end</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                  <stringProp name="HTTPSampler.port"></stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
-                  <stringProp name="HTTPSampler.method">POST</stringProp>
-                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                </HTTPSamplerProxy>
-                <hashTree>
-                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                    <collectionProp name="HeaderManager.headers">
-                      <elementProp name="accept" elementType="Header">
-                        <stringProp name="Header.name">accept</stringProp>
-                        <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                      </elementProp>
-                      <elementProp name="accept-encoding" elementType="Header">
-                        <stringProp name="Header.name">accept-encoding</stringProp>
-                        <stringProp name="Header.value">gzip, deflate, br</stringProp>
-                      </elementProp>
-                      <elementProp name="accept-language" elementType="Header">
-                        <stringProp name="Header.name">accept-language</stringProp>
-                        <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
-                      </elementProp>
-                      <elementProp name="content-length" elementType="Header">
-                        <stringProp name="Header.name">content-length</stringProp>
-                        <stringProp name="Header.value">100</stringProp>
-                      </elementProp>
-                      <elementProp name="content-type" elementType="Header">
-                        <stringProp name="Header.name">content-type</stringProp>
-                        <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                      </elementProp>
-                      <elementProp name="origin&#x9;https" elementType="Header">
-                        <stringProp name="Header.name">origin</stringProp>
-                        <stringProp name="Header.value">https://${BASE_URL}</stringProp>
-                      </elementProp>
-                      <elementProp name="referer&#x9;https" elementType="Header">
-                        <stringProp name="Header.name">referer</stringProp>
-                        <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </HeaderManager>
-                  <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                  </ConstantTimer>
-                  <hashTree/>
-                  <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">1 6 -6d-1h</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="script"></stringProp>
-                  </JSR223PreProcessor>
-                  <hashTree/>
-                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                    <stringProp name="parameters"></stringProp>
-                    <stringProp name="script"></stringProp>
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                  </JSR223PostProcessor>
-                  <hashTree/>
-                </hashTree>
-              </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="match[]" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">match[]</stringProp>
-                    </elementProp>
-                    <elementProp name="start" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">start</stringProp>
-                    </elementProp>
-                    <elementProp name="end" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">end</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
-                <stringProp name="HTTPSampler.method">POST</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                  <collectionProp name="HeaderManager.headers">
-                    <elementProp name="accept" elementType="Header">
-                      <stringProp name="Header.name">accept</stringProp>
-                      <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-encoding" elementType="Header">
-                      <stringProp name="Header.name">accept-encoding</stringProp>
-                      <stringProp name="Header.value">gzip, deflate, br</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-language" elementType="Header">
-                      <stringProp name="Header.name">accept-language</stringProp>
-                      <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
-                    </elementProp>
-                    <elementProp name="content-length" elementType="Header">
-                      <stringProp name="Header.name">content-length</stringProp>
-                      <stringProp name="Header.value">100</stringProp>
-                    </elementProp>
-                    <elementProp name="content-type" elementType="Header">
-                      <stringProp name="Header.name">content-type</stringProp>
-                      <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                    </elementProp>
-                    <elementProp name="origin&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">origin</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}</stringProp>
-                    </elementProp>
-                    <elementProp name="referer&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">referer</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </HeaderManager>
-                <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">1 6 -6d-1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Annotations If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Annotations Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
-              <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                    <collectionProp name="Arguments.arguments">
-                      <elementProp name="from" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">from</stringProp>
-                      </elementProp>
-                      <elementProp name="to" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">to</stringProp>
-                      </elementProp>
-                      <elementProp name="limit" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">100</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">limit</stringProp>
-                      </elementProp>
-                      <elementProp name="matchAny" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">false</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">matchAny</stringProp>
-                      </elementProp>
-                      <elementProp name="dashboardUID" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">dashboardUID</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                  <stringProp name="HTTPSampler.port"></stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                  <stringProp name="HTTPSampler.method">GET</stringProp>
-                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                </HTTPSamplerProxy>
-                <hashTree>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                  </ConstantTimer>
-                  <hashTree/>
-                  <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">1 6 -6d-1h</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="script"></stringProp>
-                  </JSR223PreProcessor>
-                  <hashTree/>
-                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                    <stringProp name="parameters"></stringProp>
-                    <stringProp name="script"></stringProp>
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                  </JSR223PostProcessor>
-                  <hashTree/>
-                </hashTree>
-              </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="from" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">from</stringProp>
-                    </elementProp>
-                    <elementProp name="to" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">to</stringProp>
-                    </elementProp>
-                    <elementProp name="limit" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">100</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">limit</stringProp>
-                    </elementProp>
-                    <elementProp name="matchAny" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">false</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">matchAny</stringProp>
-                    </elementProp>
-                    <elementProp name="dashboardUID" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">dashboardUID</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                <stringProp name="HTTPSampler.method">GET</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">1 6 -6d-1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Series If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Serie Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
+              <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Time Loop CSV Data Set Config" enabled="true">
+                <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}csvs/time_values.csv</stringProp>
+                <stringProp name="fileEncoding"></stringProp>
+                <stringProp name="variableNames">hours,days,raw_value</stringProp>
+                <boolProp name="ignoreFirstLine">false</boolProp>
+                <stringProp name="delimiter">,</stringProp>
+                <boolProp name="quotedData">false</boolProp>
+                <boolProp name="recycle">true</boolProp>
+                <boolProp name="stopThread">false</boolProp>
+                <stringProp name="shareMode">shareMode.all</stringProp>
+              </CSVDataSet>
               <hashTree/>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="match[]" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">match[]</stringProp>
-                    </elementProp>
-                    <elementProp name="start" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">start</stringProp>
-                    </elementProp>
-                    <elementProp name="end" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">end</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
-                <stringProp name="HTTPSampler.method">POST</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                  <collectionProp name="HeaderManager.headers">
-                    <elementProp name="accept" elementType="Header">
-                      <stringProp name="Header.name">accept</stringProp>
-                      <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-encoding" elementType="Header">
-                      <stringProp name="Header.name">accept-encoding</stringProp>
-                      <stringProp name="Header.value">gzip, deflate, br</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-language" elementType="Header">
-                      <stringProp name="Header.name">accept-language</stringProp>
-                      <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
-                    </elementProp>
-                    <elementProp name="content-length" elementType="Header">
-                      <stringProp name="Header.name">content-length</stringProp>
-                      <stringProp name="Header.value">100</stringProp>
-                    </elementProp>
-                    <elementProp name="content-type" elementType="Header">
-                      <stringProp name="Header.name">content-type</stringProp>
-                      <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                    </elementProp>
-                    <elementProp name="origin&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">origin</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}</stringProp>
-                    </elementProp>
-                    <elementProp name="referer&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">referer</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </HeaderManager>
-                <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">2 12 -12d-1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Annotations If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Annotations Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
-              <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                    <collectionProp name="Arguments.arguments">
-                      <elementProp name="from" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">from</stringProp>
-                      </elementProp>
-                      <elementProp name="to" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">to</stringProp>
-                      </elementProp>
-                      <elementProp name="limit" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">100</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">limit</stringProp>
-                      </elementProp>
-                      <elementProp name="matchAny" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">false</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">matchAny</stringProp>
-                      </elementProp>
-                      <elementProp name="dashboardUID" elementType="HTTPArgument">
-                        <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                        <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                        <stringProp name="Argument.metadata">=</stringProp>
-                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">dashboardUID</stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                  <stringProp name="HTTPSampler.port"></stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                  <stringProp name="HTTPSampler.method">GET</stringProp>
-                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                </HTTPSamplerProxy>
-                <hashTree>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                  </ConstantTimer>
-                  <hashTree/>
-                  <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">2 12 -12d-1h</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="script"></stringProp>
-                  </JSR223PreProcessor>
-                  <hashTree/>
-                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                    <stringProp name="cacheKey">true</stringProp>
-                    <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                    <stringProp name="parameters"></stringProp>
-                    <stringProp name="script"></stringProp>
-                    <stringProp name="scriptLanguage">groovy</stringProp>
-                  </JSR223PostProcessor>
-                  <hashTree/>
-                </hashTree>
-              </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="from" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">from</stringProp>
-                    </elementProp>
-                    <elementProp name="to" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">to</stringProp>
-                    </elementProp>
-                    <elementProp name="limit" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">100</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">limit</stringProp>
-                    </elementProp>
-                    <elementProp name="matchAny" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">false</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">matchAny</stringProp>
-                    </elementProp>
-                    <elementProp name="dashboardUID" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">dashboardUID</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                <stringProp name="HTTPSampler.method">GET</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">2 12 -12d-1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Series If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Serie Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Series If Controller" enabled="true">
+                <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
+                <boolProp name="IfController.evaluateAll">false</boolProp>
+                <boolProp name="IfController.useExpression">true</boolProp>
+              </IfController>
               <hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
                   <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -1547,6 +558,10 @@
                   <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 </HTTPSamplerProxy>
                 <hashTree>
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
+                  </ConstantTimer>
+                  <hashTree/>
                   <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
                     <collectionProp name="HeaderManager.headers">
                       <elementProp name="accept" elementType="Header">
@@ -1575,18 +590,14 @@
                       </elementProp>
                       <elementProp name="referer&#x9;https" elementType="Header">
                         <stringProp name="Header.name">referer</stringProp>
-                        <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
+                        <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                    <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                  </ConstantTimer>
-                  <hashTree/>
                   <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
                     <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">3 18 -18d-1h</stringProp>
+                    <stringProp name="parameters">${hours} ${days} ${raw_value}</stringProp>
                     <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
                     <stringProp name="cacheKey">true</stringProp>
                     <stringProp name="script"></stringProp>
@@ -1601,113 +612,194 @@
                   </JSR223PostProcessor>
                   <hashTree/>
                 </hashTree>
+                <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Serie Retry While Controller" enabled="true">
+                  <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
+                </WhileController>
+                <hashTree>
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
+                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                      <collectionProp name="Arguments.arguments">
+                        <elementProp name="match[]" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">match[]</stringProp>
+                        </elementProp>
+                        <elementProp name="start" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">${PAST_TIME}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">start</stringProp>
+                        </elementProp>
+                        <elementProp name="end" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">end</stringProp>
+                        </elementProp>
+                      </collectionProp>
+                    </elementProp>
+                    <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
+                    <stringProp name="HTTPSampler.port"></stringProp>
+                    <stringProp name="HTTPSampler.protocol">https</stringProp>
+                    <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                    <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
+                    <stringProp name="HTTPSampler.method">POST</stringProp>
+                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                    <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                    <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                    <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                    <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                    <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  </HTTPSamplerProxy>
+                  <hashTree>
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+                      <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
+                    </ConstantTimer>
+                    <hashTree/>
+                    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                      <collectionProp name="HeaderManager.headers">
+                        <elementProp name="accept" elementType="Header">
+                          <stringProp name="Header.name">accept</stringProp>
+                          <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                        </elementProp>
+                        <elementProp name="accept-encoding" elementType="Header">
+                          <stringProp name="Header.name">accept-encoding</stringProp>
+                          <stringProp name="Header.value">gzip, deflate, br</stringProp>
+                        </elementProp>
+                        <elementProp name="accept-language" elementType="Header">
+                          <stringProp name="Header.name">accept-language</stringProp>
+                          <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
+                        </elementProp>
+                        <elementProp name="content-length" elementType="Header">
+                          <stringProp name="Header.name">content-length</stringProp>
+                          <stringProp name="Header.value">100</stringProp>
+                        </elementProp>
+                        <elementProp name="content-type" elementType="Header">
+                          <stringProp name="Header.name">content-type</stringProp>
+                          <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+                        </elementProp>
+                        <elementProp name="origin&#x9;https" elementType="Header">
+                          <stringProp name="Header.name">origin</stringProp>
+                          <stringProp name="Header.value">https://${BASE_URL}</stringProp>
+                        </elementProp>
+                        <elementProp name="referer&#x9;https" elementType="Header">
+                          <stringProp name="Header.name">referer</stringProp>
+                          <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
+                        </elementProp>
+                      </collectionProp>
+                    </HeaderManager>
+                    <hashTree/>
+                    <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+                      <stringProp name="scriptLanguage">groovy</stringProp>
+                      <stringProp name="parameters">${hours} ${days} ${raw_value}</stringProp>
+                      <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
+                      <stringProp name="cacheKey">true</stringProp>
+                      <stringProp name="script"></stringProp>
+                    </JSR223PreProcessor>
+                    <hashTree/>
+                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+                      <stringProp name="cacheKey">true</stringProp>
+                      <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
+                      <stringProp name="parameters"></stringProp>
+                      <stringProp name="script"></stringProp>
+                      <stringProp name="scriptLanguage">groovy</stringProp>
+                    </JSR223PostProcessor>
+                    <hashTree/>
+                  </hashTree>
+                </hashTree>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Series" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="match[]" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">up{instance=~&quot;demo.do.prometheus.io:${instances}&quot;}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">match[]</stringProp>
-                    </elementProp>
-                    <elementProp name="start" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">start</stringProp>
-                    </elementProp>
-                    <elementProp name="end" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">end</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/datasources/uid/000000008/resources/api/v1/series</stringProp>
-                <stringProp name="HTTPSampler.method">POST</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Annotations If Controller" enabled="true">
+                <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
+                <boolProp name="IfController.evaluateAll">false</boolProp>
+                <boolProp name="IfController.useExpression">true</boolProp>
+              </IfController>
               <hashTree>
-                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                  <collectionProp name="HeaderManager.headers">
-                    <elementProp name="accept" elementType="Header">
-                      <stringProp name="Header.name">accept</stringProp>
-                      <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Annotations Retry While Controller" enabled="true">
+                  <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
+                </WhileController>
+                <hashTree>
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
+                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                      <collectionProp name="Arguments.arguments">
+                        <elementProp name="from" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">from</stringProp>
+                        </elementProp>
+                        <elementProp name="to" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">to</stringProp>
+                        </elementProp>
+                        <elementProp name="limit" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">100</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">limit</stringProp>
+                        </elementProp>
+                        <elementProp name="matchAny" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">false</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">matchAny</stringProp>
+                        </elementProp>
+                        <elementProp name="dashboardUID" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                          <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">dashboardUID</stringProp>
+                        </elementProp>
+                      </collectionProp>
                     </elementProp>
-                    <elementProp name="accept-encoding" elementType="Header">
-                      <stringProp name="Header.name">accept-encoding</stringProp>
-                      <stringProp name="Header.value">gzip, deflate, br</stringProp>
-                    </elementProp>
-                    <elementProp name="accept-language" elementType="Header">
-                      <stringProp name="Header.name">accept-language</stringProp>
-                      <stringProp name="Header.value">en-GB,en-US;q=0.9,en;q=0.8</stringProp>
-                    </elementProp>
-                    <elementProp name="content-length" elementType="Header">
-                      <stringProp name="Header.name">content-length</stringProp>
-                      <stringProp name="Header.value">100</stringProp>
-                    </elementProp>
-                    <elementProp name="content-type" elementType="Header">
-                      <stringProp name="Header.name">content-type</stringProp>
-                      <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                    </elementProp>
-                    <elementProp name="origin&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">origin</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}</stringProp>
-                    </elementProp>
-                    <elementProp name="referer&#x9;https" elementType="Header">
-                      <stringProp name="Header.name">referer</stringProp>
-                      <stringProp name="Header.value">https://${BASE_URL}/d/${DAHSBOARD_UID}/prometheus-templating?orgId=1&amp;viewPanel=4&amp;var-jobs=alertmanager&amp;var-jobs=node&amp;var-jobs=prometheus&amp;var-disk_series=${nodes}&amp;var-query=up%7Benv%3D%22demo%22,instance%3D%22demo.do.prometheus.io:9093%22,job%3D%22alertmanager%22%7D%201%201685267435000&amp;var-instance=demo.do.prometheus.io:${instances}&amp;var-instance2=demo.do.prometheus.io:9093&amp;var-last=node&amp;from=now-${TIME_RANGE_RAW_FORMAT}&amp;to=now</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </HeaderManager>
-                <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">3 18 -18d-1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
-              </hashTree>
-            </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Annotaations If Controller" enabled="true">
-              <stringProp name="IfController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) )}</stringProp>
-              <boolProp name="IfController.evaluateAll">false</boolProp>
-              <boolProp name="IfController.useExpression">true</boolProp>
-            </IfController>
-            <hashTree>
-              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Annotations Retry While Controller" enabled="true">
-                <stringProp name="WhileController.condition">${__javaScript( parseInt(vars.get(&quot;ERROR_COUNT&quot;)) &lt; parseInt(vars.get(&quot;restart_times&quot;)) &amp;&amp; parseInt(vars.get(&quot;STATUS_CODE&quot;)) != 200 )}</stringProp>
-              </WhileController>
-              <hashTree>
+                    <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
+                    <stringProp name="HTTPSampler.port"></stringProp>
+                    <stringProp name="HTTPSampler.protocol">https</stringProp>
+                    <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                    <stringProp name="HTTPSampler.path">api/annotations</stringProp>
+                    <stringProp name="HTTPSampler.method">GET</stringProp>
+                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                    <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                    <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                    <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                    <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                    <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                  </HTTPSamplerProxy>
+                  <hashTree>
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+                      <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
+                    </ConstantTimer>
+                    <hashTree/>
+                    <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+                      <stringProp name="scriptLanguage">groovy</stringProp>
+                      <stringProp name="parameters">${hours} ${days} ${raw_value}</stringProp>
+                      <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
+                      <stringProp name="cacheKey">true</stringProp>
+                      <stringProp name="script"></stringProp>
+                    </JSR223PreProcessor>
+                    <hashTree/>
+                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+                      <stringProp name="cacheKey">true</stringProp>
+                      <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
+                      <stringProp name="parameters"></stringProp>
+                      <stringProp name="script"></stringProp>
+                      <stringProp name="scriptLanguage">groovy</stringProp>
+                    </JSR223PostProcessor>
+                    <hashTree/>
+                  </hashTree>
+                </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
                   <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                     <collectionProp name="Arguments.arguments">
@@ -1769,7 +861,7 @@
                   <hashTree/>
                   <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
                     <stringProp name="scriptLanguage">groovy</stringProp>
-                    <stringProp name="parameters">3 18 -18d-1h</stringProp>
+                    <stringProp name="parameters">${hours} ${days} ${raw_value}</stringProp>
                     <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
                     <stringProp name="cacheKey">true</stringProp>
                     <stringProp name="script"></stringProp>
@@ -1784,82 +876,6 @@
                   </JSR223PostProcessor>
                   <hashTree/>
                 </hashTree>
-              </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Annotations" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="from" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PAST_HOUR}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">from</stringProp>
-                    </elementProp>
-                    <elementProp name="to" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${PRESENT_TIME}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">to</stringProp>
-                    </elementProp>
-                    <elementProp name="limit" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">100</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">limit</stringProp>
-                    </elementProp>
-                    <elementProp name="matchAny" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">false</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">matchAny</stringProp>
-                    </elementProp>
-                    <elementProp name="dashboardUID" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                      <stringProp name="Argument.value">${DAHSBOARD_UID}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">dashboardUID</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">api/annotations</stringProp>
-                <stringProp name="HTTPSampler.method">GET</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">${user_wait_time}</stringProp>
-                </ConstantTimer>
-                <hashTree/>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                  <stringProp name="parameters">3 18 -18d-1h</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/DateCalc.groovy</stringProp>
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="script"></stringProp>
-                </JSR223PreProcessor>
-                <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
-                  <stringProp name="cacheKey">true</stringProp>
-                  <stringProp name="filename">${PATH_GROOVY_WITH_SEPARATOR}scripts/CheckErrors.groovy</stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <stringProp name="script"></stringProp>
-                  <stringProp name="scriptLanguage">groovy</stringProp>
-                </JSR223PostProcessor>
-                <hashTree/>
               </hashTree>
             </hashTree>
           </hashTree>
